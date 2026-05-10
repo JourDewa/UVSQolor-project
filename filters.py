@@ -96,6 +96,20 @@ def flou():
     matrice_affichee = temp_flou
     rafraichir()
 
+def flou_gaussien():
+    global matrice_affichee
+    mat_convl = np.array([[1,2,1],
+                         [2,4,2],
+                         [1,2,1]])/16
+    temp_flou = np.zeros_like(matrice_affichee)
+    temp_c = 0
+
+    for i in range(3):
+        temp_c = convolve2d(matrice_affichee[:,:,i], mat_convl, mode='same', boundary='symm')
+        temp_flou[:,:,i] = temp_c
+    
+    matrice_affichee = temp_flou
+    rafraichir()
 
 def nette(n):
     global matrice_pixel
@@ -111,6 +125,24 @@ def nette(n):
 
     matrice_details = (matrice_affichee.astype(float) - temp_flou)
     temp = matrice_affichee.astype(float) + matrice_details*float(n)
+    matrice_affichee = np.clip(temp, 0, 255)
+    matrice_affichee = matrice_affichee.astype(np.uint8)
+    rafraichir()
+
+def nette_gaussien():
+    global matrice_affichee
+    mat_convl = np.array([[1,2,1],
+                         [2,4,2],
+                         [1,2,1]])/16
+    temp_flou = np.zeros_like(matrice_affichee)
+    temp_c = 0
+
+    for i in range(3):
+        temp_c = convolve2d(matrice_affichee[:,:,i], mat_convl, mode='same', boundary='symm')
+        temp_flou[:,:,i] = temp_c
+    
+    matrice_details = (matrice_affichee.astype(float) - temp_flou)
+    temp = matrice_affichee.astype(float) + matrice_details
     matrice_affichee = np.clip(temp, 0, 255)
     matrice_affichee = matrice_affichee.astype(np.uint8)
     rafraichir()

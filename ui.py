@@ -204,7 +204,6 @@ def contraste_slider():
     bouton_annuler.pack(side=tk.LEFT, padx=10)
 
 
-# Create menu
 menubar = tk.Menu()
 
 file_menu = tk.Menu(menubar, tearoff=False)
@@ -243,8 +242,19 @@ filtre_menu.add_command(
     command=nette_slider
 )
 
+filtre_gaussien = tk.Menu(menubar, tearoff=False)
+filtre_gaussien.add_command(
+    label='flou gaussien',
+    command=filters.flou_gaussien
+)
+filtre_gaussien.add_command(
+    label='nette gaussien',
+    command=filters.nette_gaussien
+)
+
 menubar.add_cascade(menu=file_menu, label='file')
 menubar.add_cascade(menu=filtre_menu, label='filtre')
+menubar.add_cascade(menu=filtre_gaussien, label='gaussien')
 
 root.config(menu = menubar)
 root.mainloop()
