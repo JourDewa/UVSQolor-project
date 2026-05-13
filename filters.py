@@ -50,7 +50,7 @@ def filtre_sepia():
 
 def correction_gamma(m): #lumo
     global matrice_affichee
-
+    #gris moyen et valeur cible
     gamma = math.log(float(m)) / math.log(0.5)
     max_value = float(np.iinfo(matrice_affichee.dtype).max)
 
@@ -104,6 +104,7 @@ def flou():
 
 def flou_gaussien(): #garde centre
     global matrice_affichee
+    #milieu plus important que les cotés
     mat_convl = np.array([[1,2,1],
                          [2,4,2],
                          [1,2,1]])/16
