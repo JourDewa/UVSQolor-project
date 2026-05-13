@@ -41,6 +41,7 @@ def filtre_sepia():
     sep = np.array([[0.4,0.3,0.4],
                     [0.3,0.3,0.2],
                     [0.4,0.5,0.1]])
+    #combinaison linéaire de nouveau des anciens
     matrice_pixel = matrice_pixel.dot(sep)
     matrice_pixel = np.clip(matrice_pixel, 0, 225)
     matrice_pixel = matrice_pixel.astype(np.uint8)
@@ -54,6 +55,7 @@ def correction_gamma(m): #lumo
     max_value = float(np.iinfo(matrice_affichee.dtype).max)
 
     matrice_gamma = matrice_affichee.astype(np.float64)
+    #pour garder noir et blanc (norma)
     matrice_gamma = max_value * (matrice_gamma / max_value) ** gamma
     matrice_gamma = np.clip(matrice_gamma, 0, max_value)
 
@@ -65,16 +67,19 @@ def correction_gamma_pivotee(p, c): #contrast
     global matrice_affichee
 
     gammap = 0
+    #contrast aug
     if c >= 0:
         gammap = 1+c
-    else:
+    else: #contraste diminue
         gammap = 1/(1-c)
     max_value = float(np.iinfo(matrice_affichee.dtype).max)
-
+    #norma
     matrice_gammap = matrice_affichee.astype(np.float64) / max_value
-
+    #fonction par morceaux
     temp = matrice_gammap # pour pas fausser les verif
-    matrice_gammap = np.where(temp <= p, p*(temp/p)**gammap, 1 -(1-p)*((1-temp)/(1-p))**gammap) #if else qui marche parce que ambiguous
+    #if else qui marche parce que ambiguous, sinon triple boucle
+    #pixel plus sombre que le pivot
+    matrice_gammap = np.where(temp <= p, p*(temp/p)**gammap, 1 -(1-p)*((1-temp)/(1-p))**gammap) 
 
     matrice_gammap *= max_value
     matrice_gammap = np.clip(matrice_gammap, 0, max_value)
@@ -90,13 +95,14 @@ def flou():
     temp_c = 0
 
     for i in range(3):
+        #chaque pixel somme pondere de ses voisins
         temp_c = convolve2d(matrice_affichee[:,:,i], mat_convl, mode='same', boundary='symm')
         temp_flou[:,:,i] = temp_c
     
     matrice_affichee = temp_flou
     rafraichir()
 
-def flou_gaussien():
+def flou_gaussien(): #garde centre
     global matrice_affichee
     mat_convl = np.array([[1,2,1],
                          [2,4,2],
